@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AssistantPlugin 自测</title>
+    <style>
+      body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; margin: 32px; color: #0f172a; }
+      h1 { font-size: 20px; }
+      table { border-collapse: collapse; margin-top: 16px; width: 100%; max-width: 760px; }
+      th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #e2e8f0; font-size: 14px; }
+      .pass { color: #15803d; font-weight: 600; }
+      .fail { color: #b91c1c; font-weight: 600; }
+      .summary { margin-top: 16px; font-size: 15px; font-weight: 600; }
+    </style>
+  </head>
+  <body>
+    <h1>AssistantPlugin 自测</h1>
+    <p>断言插件对外行为：初始化、开关、放大还原、图标替换、尺寸、持久化。</p>
+    <table>
+      <thead><tr><th>#</th><th>断言</th><th>结果</th><th>实际值</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <div class="summary" id="summary">运行中…</div>
+
+    <script src="../src/assistant-plugin.js"></script>
+    <script>
+      const results = []
+      const rows = document.getElementById('rows')
+
+      function assert(name, fn) {
+        try {
+          const actual = fn()
+          const ok = actual === true || actual === undefined
+          results.push({ name, ok: !!ok, actual: ok ? 'ok' : String(actual) })
+        } catch (error) {
+          results.push({ name, ok: false, actual: '抛错: ' + error.message })
+        }
+      }
+
+      localStorage.removeItem('assistant-plugin-selftest')
+      const plugin = AssistantPlugin.init({
+        iframeUrl: './agent.html',
+        iconSize: 56,
+        title: '自测',
+        width: 420,
+        height: 600,
+        position: 'bottom-right',
+        remember: true,
+        storageKey: 'assistant-plugin-selftest'
+      })
+
+      const host = document.querySelector('[data-assistant-plugin]')
+      const sr = host.shadowRoot
+      const icon = sr.querySelector('.ap-icon')
+      const panel = sr.querySelector('.ap-panel')
+
+      assert('插件挂载到页面', () => !!host)
+      assert('图标尺寸 = 56', () => (Math.round(icon.getBoundingClientRect().width) === 56 ? true : icon.getBoundingClientRect().width))
+      assert('初始面板隐藏', () => (panel.hidden ? true : 'panel.hidden = false'))
+      assert('初始 isOpen() = false', () => (plugin.isOpen() === false ? true : plugin.isOpen()))
+
+      plugin.open()
+      assert('open() 后面板可见', () => (panel.hidden ? '仍然隐藏' : true))
+      assert('open() 后图标隐藏', () => (icon.hidden ? true : 'icon.hidden = false'))
+      assert('懒加载后 iframe 有 src', () => {
+        const src = sr.querySelector('iframe').getAttribute('src')
+        return src ? true : 'src 为空'
+      })
+
+      plugin.setSize(72)
+      assert('setSize(72) 生效', () => (icon.style.width === '72px' ? true : icon.style.width))
+
+      plugin.setIcon({ iconHtml: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" /></svg>' })
+      assert('setIcon 换成内联 SVG', () => (icon.querySelector('svg') ? true : '没有 svg'))
+
+      const before = panel.getBoundingClientRect()
+      plugin.toggleMaximize()
+      assert('放大后铺满视口', () => {
+        const r = panel.getBoundingClientRect()
+        const ok = Math.round(r.width) === innerWidth - 32 && Math.round(r.height) === innerHeight - 32
+        return ok ? true : `${Math.round(r.width)}x${Math.round(r.height)}`
+      })
+      assert('放大时缩放柄隐藏', () => {
+        const display = getComputedStyle(sr.querySelector('.ap-handle')).display
+        return display === 'none' ? true : display
+      })
+      plugin.toggleMaximize()
+      assert('还原回放大前尺寸', () => {
+        const r = panel.getBoundingClientRect()
+        const ok = Math.round(r.width) === Math.round(before.width) && Math.round(r.height) === Math.round(before.height)
+        return ok ? true : `${Math.round(r.width)}x${Math.round(r.height)} vs ${Math.round(before.width)}x${Math.round(before.height)}`
+      })
+
+      plugin.close()
+      assert('close() 后面板隐藏', () => (panel.hidden ? true : '仍然可见'))
+      assert('close() 后图标回来', () => (icon.hidden ? '图标仍隐藏' : true))
+      assert('close() 后 isOpen() = false', () => (plugin.isOpen() === false ? true : plugin.isOpen()))
+      assert('状态写入 localStorage', () => {
+        const saved = JSON.parse(localStorage.getItem('assistant-plugin-selftest') || '{}')
+        return saved.open === false && typeof saved.width === 'number' ? true : JSON.stringify(saved)
+      })
+
+      const passed = results.filter((r) => r.ok).length
+      const failed = results.length - passed
+      results.forEach((r, i) => {
+        const tr = document.createElement('tr')
+        tr.innerHTML = `<td>${i + 1}</td><td>${r.name}</td>` +
+          `<td class="${r.ok ? 'pass' : 'fail'}">${r.ok ? 'PASS' : 'FAIL'}</td>` +
+          `<td>${r.actual}</td>`
+        rows.appendChild(tr)
+      })
+      document.getElementById('summary').textContent =
+        `共 ${results.length} 项：通过 ${passed}，失败 ${failed}`
+      document.getElementById('summary').className = 'summary ' + (failed ? 'fail' : 'pass')
+      window.__selftest = { total: results.length, passed, failed, results }
+    </script>
+  </body>
+</html>

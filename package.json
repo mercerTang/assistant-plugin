@@ -1,0 +1,27 @@
+{
+  "name": "assistant-plugin",
+  "version": "0.1.0",
+  "description": "可嵌入任意网页的小助手浮窗插件：可拖动图标 + 可缩放 iframe 面板（零依赖，Shadow DOM 隔离）",
+  "main": "src/assistant-plugin.js",
+  "files": [
+    "src/assistant-plugin.js",
+    "README.md"
+  ],
+  "keywords": [
+    "assistant",
+    "iframe",
+    "widget",
+    "embed",
+    "floating-button"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitee.com/mercerTTT/assistant-plugin.git"
+  },
+  "homepage": "https://gitee.com/mercerTTT/assistant-plugin",
+  "bugs": {
+    "url": "https://gitee.com/mercerTTT/assistant-plugin/issues"
+  },
+  "author": "mercer (mercerTang)"
+}

@@ -1,0 +1,16 @@
+# macOS
+.DS_Store
+
+# 编辑器
+.idea/
+.vscode/
+*.swp
+
+# 依赖与日志
+node_modules/
+*.log
+npm-debug.log*
+
+# 本地临时文件
+*.local
+.tmp/

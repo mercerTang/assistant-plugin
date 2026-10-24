@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>小助手（演示）</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --brand: #2563eb;
+        --ink: #0f172a;
+        --muted: #64748b;
+        --hairline: rgba(15, 23, 42, 0.1);
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif;
+        color: var(--ink);
+        background: #f8fafc;
+      }
+      main { max-width: 760px; margin: 0 auto; padding: 48px 24px 120px; }
+      h1 { font-size: 28px; margin: 0 0 8px; }
+      p { line-height: 1.8; color: #334155; }
+      .card {
+        margin-top: 24px; padding: 20px; background: #fff; border: 1px solid var(--hairline);
+        border-radius: 14px; box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+      }
+      .controls { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+      button {
+        font: inherit; padding: 8px 14px; border-radius: 10px; border: 1px solid var(--hairline);
+        background: #fff; cursor: pointer;
+      }
+      button.primary { background: var(--brand); border-color: var(--brand); color: #fff; }
+      code { background: rgba(15, 23, 42, 0.06); padding: 2px 6px; border-radius: 6px; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>小助手插件演示</h1>
+      <p>这是一个普通的宿主页面，用来验证插件行为：右下角图标可以拖动，点击打开 iframe，关闭后图标回来。</p>
+
+      <div class="card">
+        <h2 style="font-size: 18px; margin: 0 0 8px">测什么</h2>
+        <p style="margin: 0">
+          1. 拖动图标到任意位置；2. 点击图标打开面板；3. 拖面板的四边/四角改尺寸；
+          4. 点右上角 × 关闭，图标回到原位；5. 刷新页面，位置与尺寸被记住。
+        </p>
+        <div class="controls">
+          <button class="primary" id="open">打开面板</button>
+          <button id="close">关闭面板</button>
+          <button id="change-icon">换一个图标</button>
+          <button id="icon-size">图标 72px</button>
+          <button id="reset">重置位置与尺寸</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 style="font-size: 18px; margin: 0 0 8px">接入方式</h2>
+        <p style="margin: 0">
+          引入 <code>src/assistant-plugin.js</code>，调用
+          <code>AssistantPlugin.init({ iframeUrl })</code> 即可。全部配置见 README。
+        </p>
+      </div>
+    </main>
+
+    <script src="../src/assistant-plugin.js"></script>
+    <script>
+      const plugin = AssistantPlugin.init({
+        iframeUrl: './agent.html',
+        iconSize: 56,
+        title: '小助手',
+        width: 460,
+        height: 620,
+        position: 'bottom-right',
+        remember: true,
+        storageKey: 'assistant-plugin-demo'
+      })
+
+      document.getElementById('open').addEventListener('click', () => plugin.open())
+      document.getElementById('close').addEventListener('click', () => plugin.close())
+      document.getElementById('change-icon').addEventListener('click', () => {
+        plugin.setIcon({
+          iconHtml:
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-8.5 8.3 9 9 0 0 1-3.4-.7L3 20l1.1-3.3a8 8 0 0 1-1.6-4.9A8.4 8.4 0 0 1 11 3.5a8.4 8.4 0 0 1 10 8z"/></svg>'
+        })
+      })
+      document.getElementById('icon-size').addEventListener('click', () => plugin.setSize(72))
+      document.getElementById('reset').addEventListener('click', () => {
+        localStorage.removeItem('assistant-plugin-demo')
+        location.reload()
+      })
+    </script>
+  </body>
+</html>
