@@ -17,11 +17,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://gitee.com/mercerTTT/assistant-plugin.git"
+    "url": "git+https://gitee.com/mercerTTT/assisant-plugin.git"
   },
-  "homepage": "https://gitee.com/mercerTTT/assistant-plugin",
+  "homepage": "https://gitee.com/mercerTTT/assisant-plugin",
   "bugs": {
-    "url": "https://gitee.com/mercerTTT/assistant-plugin/issues"
+    "url": "https://gitee.com/mercerTTT/assisant-plugin/issues"
   },
   "author": "mercer (mercerTang)"
 }

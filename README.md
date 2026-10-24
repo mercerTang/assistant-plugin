@@ -20,7 +20,7 @@
 ## 快速开始
 
 ```html
-<script src="https://gitee.com/mercerTTT/assistant-plugin/raw/main/src/assistant-plugin.js"></script>
+<script src="https://gitee.com/mercerTTT/assisant-plugin/raw/main/src/assistant-plugin.js"></script>
 <script>
   AssistantPlugin.init({
     iframeUrl: 'https://your-agent.example.com',
@@ -35,7 +35,7 @@
 也可以把 `src/assistant-plugin.js` 下载到自己的静态目录，或经 npm / 打包工具引入：
 
 ```bash
-npm install git+https://gitee.com/mercerTTT/assistant-plugin.git#main
+npm install git+https://gitee.com/mercerTTT/assisant-plugin.git#main
 ```
 
 ```js
