@@ -20,6 +20,9 @@
 ## 快速开始
 
 ```html
+<!-- GitHub -->
+<script src="https://raw.githubusercontent.com/mercerTang/assistant-plugin/main/src/assistant-plugin.js"></script>
+<!-- 或 Gitee -->
 <script src="https://gitee.com/mercerTTT/assisant-plugin/raw/main/src/assistant-plugin.js"></script>
 <script>
   AssistantPlugin.init({
@@ -35,7 +38,7 @@
 也可以把 `src/assistant-plugin.js` 下载到自己的静态目录，或经 npm / 打包工具引入：
 
 ```bash
-npm install git+https://gitee.com/mercerTTT/assisant-plugin.git#main
+npm install git+https://github.com/mercerTang/assistant-plugin.git#main
 ```
 
 ```js
@@ -151,6 +154,15 @@ assistant-plugin/
 
 **可以在同页放两个浮窗吗？**
 可以，给每个实例不同的 `storageKey`，否则位置状态会互相覆盖。
+
+## 仓库
+
+| 平台 | 地址 |
+|---|---|
+| GitHub | <https://github.com/mercerTang/assistant-plugin> |
+| Gitee | <https://gitee.com/mercerTTT/assisant-plugin> |
+
+两个远端内容一致，issue 请在 GitHub 提。
 
 ## 版本
 
